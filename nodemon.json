@@ -1,0 +1,10 @@
+{
+  "watch": [
+    "src"
+  ],
+  "ignore": [
+    "src/grammar/grammar.ts"
+  ],
+  "ext": "ts,ne",
+  "exec": "yarn run parser:compile && node -r tsconfig-paths/register -r ts-node/register src/index.ts"
+}
