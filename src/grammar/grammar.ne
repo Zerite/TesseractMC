@@ -5,22 +5,27 @@
 
 Expression -> 
     Task _ "finish":? {% input => ({ type: 'execute', data: { task: input[0] } }) %} |
-    "do" __ ExpressionList {% input => ({ type: 'executeAll', data: { tasks: input[2] }}) %}
+    "do" __ ExpressionList {% input => ({ type: 'executeAll', data: { tasks: input[2] }}) %} |
+    "repeat" __ Expression __ "done" {% input => ({ type: 'repeat', data: { task: input[2] }}) %}
 
 ExpressionList ->
-    Expression __ "then" __ ExpressionList {% input => [input[0], ...input[4]] %} |
+    Expression __ ("and" | "then") __ ExpressionList {% input => [input[0], ...input[4]] %} |
     Expression __ "finish" {% input => [input[0]] %}
 
 Task ->
     # EX: say "Hello, world!"
     "say"i __ String {% input => ({ task: "say", data: { text: input[2] } }) %} |
     "move to"i __ Position {% input => ({ task: "moveTo", data: { position: input[2] } }) %} |
-    "stop" {% input => ({ task: "stop" }) %}
+    "attack"i __ Entity {% input => ({ task: "attack", data: { entity: input[2] } }) %} |
+    "run script"i __ String {% input => ({ task: "runScript", data: { path: input[2] } }) %} |
+    "stop"i {% input => ({ task: "stop" }) %}
 
 String -> "\"" [^\\"]:* "\"" {% d => d[1].join("") %}
 Word -> [^ ]:* {% d => d[0].join("") %}
 
-Position -> BasicPosition {% input => ({ basic: input[0] }) %}
+Position ->
+    BasicPosition {% input => ({ basic: input[0] }) %} |
+    "relative" __ Position {% input => ({ relative: input[2] }) %}
 
 BasicPosition -> 
     Entity {% input => ({ entity: input[0] }) %} |
@@ -32,4 +37,5 @@ Coordinates ->
 
 Entity ->
     "me" {% input => ({ special: "me" }) %} |
-    "player" __ Word {% input => ({ player: input[2] }) %}
+    "player" __ Word {% input => ({ player: input[2] }) %} |
+    "mob" __ String {% input => ({ mob: input[2] }) %}

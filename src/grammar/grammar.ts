@@ -208,17 +208,46 @@ const grammar: Grammar = {
             postprocess: (input) => ({ type: 'executeAll', data: { tasks: input[2] } }),
         },
         {
-            name: 'ExpressionList$string$1',
-            symbols: [{ literal: 't' }, { literal: 'h' }, { literal: 'e' }, { literal: 'n' }],
+            name: 'Expression$string$2',
+            symbols: [
+                { literal: 'r' },
+                { literal: 'e' },
+                { literal: 'p' },
+                { literal: 'e' },
+                { literal: 'a' },
+                { literal: 't' },
+            ],
             postprocess: (d) => d.join(''),
         },
         {
+            name: 'Expression$string$3',
+            symbols: [{ literal: 'd' }, { literal: 'o' }, { literal: 'n' }, { literal: 'e' }],
+            postprocess: (d) => d.join(''),
+        },
+        {
+            name: 'Expression',
+            symbols: ['Expression$string$2', '__', 'Expression', '__', 'Expression$string$3'],
+            postprocess: (input) => ({ type: 'repeat', data: { task: input[2] } }),
+        },
+        {
+            name: 'ExpressionList$subexpression$1$string$1',
+            symbols: [{ literal: 'a' }, { literal: 'n' }, { literal: 'd' }],
+            postprocess: (d) => d.join(''),
+        },
+        { name: 'ExpressionList$subexpression$1', symbols: ['ExpressionList$subexpression$1$string$1'] },
+        {
+            name: 'ExpressionList$subexpression$1$string$2',
+            symbols: [{ literal: 't' }, { literal: 'h' }, { literal: 'e' }, { literal: 'n' }],
+            postprocess: (d) => d.join(''),
+        },
+        { name: 'ExpressionList$subexpression$1', symbols: ['ExpressionList$subexpression$1$string$2'] },
+        {
             name: 'ExpressionList',
-            symbols: ['Expression', '__', 'ExpressionList$string$1', '__', 'ExpressionList'],
+            symbols: ['Expression', '__', 'ExpressionList$subexpression$1', '__', 'ExpressionList'],
             postprocess: (input) => [input[0], ...input[4]],
         },
         {
-            name: 'ExpressionList$string$2',
+            name: 'ExpressionList$string$1',
             symbols: [
                 { literal: 'f' },
                 { literal: 'i' },
@@ -231,7 +260,7 @@ const grammar: Grammar = {
         },
         {
             name: 'ExpressionList',
-            symbols: ['Expression', '__', 'ExpressionList$string$2'],
+            symbols: ['Expression', '__', 'ExpressionList$string$1'],
             postprocess: (input) => [input[0]],
         },
         {
@@ -259,11 +288,37 @@ const grammar: Grammar = {
             postprocess: (input) => ({ task: 'moveTo', data: { position: input[2] } }),
         },
         {
-            name: 'Task$string$1',
-            symbols: [{ literal: 's' }, { literal: 't' }, { literal: 'o' }, { literal: 'p' }],
-            postprocess: (d) => d.join(''),
+            name: 'Task$subexpression$3',
+            symbols: [/[aA]/, /[tT]/, /[tT]/, /[aA]/, /[cC]/, /[kK]/],
+            postprocess: function (d) {
+                return d.join('');
+            },
         },
-        { name: 'Task', symbols: ['Task$string$1'], postprocess: (input) => ({ task: 'stop' }) },
+        {
+            name: 'Task',
+            symbols: ['Task$subexpression$3', '__', 'Entity'],
+            postprocess: (input) => ({ task: 'attack', data: { entity: input[2] } }),
+        },
+        {
+            name: 'Task$subexpression$4',
+            symbols: [/[rR]/, /[uU]/, /[nN]/, { literal: ' ' }, /[sS]/, /[cC]/, /[rR]/, /[iI]/, /[pP]/, /[tT]/],
+            postprocess: function (d) {
+                return d.join('');
+            },
+        },
+        {
+            name: 'Task',
+            symbols: ['Task$subexpression$4', '__', 'String'],
+            postprocess: (input) => ({ task: 'runScript', data: { path: input[2] } }),
+        },
+        {
+            name: 'Task$subexpression$5',
+            symbols: [/[sS]/, /[tT]/, /[oO]/, /[pP]/],
+            postprocess: function (d) {
+                return d.join('');
+            },
+        },
+        { name: 'Task', symbols: ['Task$subexpression$5'], postprocess: (input) => ({ task: 'stop' }) },
         { name: 'String$ebnf$1', symbols: [] },
         { name: 'String$ebnf$1', symbols: ['String$ebnf$1', /[^\\"]/], postprocess: (d) => d[0].concat([d[1]]) },
         {
@@ -275,6 +330,25 @@ const grammar: Grammar = {
         { name: 'Word$ebnf$1', symbols: ['Word$ebnf$1', /[^ ]/], postprocess: (d) => d[0].concat([d[1]]) },
         { name: 'Word', symbols: ['Word$ebnf$1'], postprocess: (d) => d[0].join('') },
         { name: 'Position', symbols: ['BasicPosition'], postprocess: (input) => ({ basic: input[0] }) },
+        {
+            name: 'Position$string$1',
+            symbols: [
+                { literal: 'r' },
+                { literal: 'e' },
+                { literal: 'l' },
+                { literal: 'a' },
+                { literal: 't' },
+                { literal: 'i' },
+                { literal: 'v' },
+                { literal: 'e' },
+            ],
+            postprocess: (d) => d.join(''),
+        },
+        {
+            name: 'Position',
+            symbols: ['Position$string$1', '__', 'Position'],
+            postprocess: (input) => ({ relative: input[2] }),
+        },
         { name: 'BasicPosition', symbols: ['Entity'], postprocess: (input) => ({ entity: input[0] }) },
         { name: 'BasicPosition', symbols: ['Coordinates'], postprocess: (input) => ({ coordinates: input[0] }) },
         {
@@ -302,6 +376,12 @@ const grammar: Grammar = {
             postprocess: (d) => d.join(''),
         },
         { name: 'Entity', symbols: ['Entity$string$2', '__', 'Word'], postprocess: (input) => ({ player: input[2] }) },
+        {
+            name: 'Entity$string$3',
+            symbols: [{ literal: 'm' }, { literal: 'o' }, { literal: 'b' }],
+            postprocess: (d) => d.join(''),
+        },
+        { name: 'Entity', symbols: ['Entity$string$3', '__', 'String'], postprocess: (input) => ({ mob: input[2] }) },
     ],
     ParserStart: 'Expression',
 };

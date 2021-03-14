@@ -37,10 +37,10 @@ bot.on('chat', async (username, message) => {
     if (username === bot.username) return;
 
     if (process.env.OPENAI_ENABLED?.toLowerCase() === 'true') {
-        await execute({ bot, executor: bot.players[username] }, message);
-    } else {
         const response = await request(message);
         Logger.info(`${chalk.red('[OPENAI]')} ${response}`);
-        if (response) await execute({ bot, executor: bot.players[username] }, response);
+        if (response) await execute({ bot, executor: bot.players[username], stopping: false }, response);
+    } else {
+        await execute({ bot, executor: bot.players[username], stopping: false }, message);
     }
 });

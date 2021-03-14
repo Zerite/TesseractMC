@@ -1,18 +1,19 @@
 import { ExecutionContext } from '@tesseract/action/task';
 import { ParsedProcessor, Processor } from '@tesseract/action/processor';
 import { process } from '@tesseract/action/manager';
+import { delay } from '@tesseract/util/promise';
 
 interface Data {
-    tasks: ParsedProcessor<unknown>[];
+    task: ParsedProcessor<unknown>;
 }
 
-class ExecuteAllProcessor implements Processor<Data> {
+class RepeatProcessor implements Processor<Data> {
     async execute(context: ExecutionContext, data: Data): Promise<void> {
-        for (const task of data.tasks) {
-            if (context.stopping) return;
-            await process(context, task);
+        while (!context.stopping) {
+            await process(context, data.task);
+            await delay(50);
         }
     }
 }
 
-export default new ExecuteAllProcessor();
+export default new RepeatProcessor();

@@ -1,9 +1,9 @@
-import { ExecutionContext, ParsedTask, Position, Task } from '@tesseract/action/task';
-import { getPosition } from '@tesseract/util/position';
+import { ExecutionContext, ParsedPosition, ParsedTask, Task } from '@tesseract/action/task';
+import { getPosition } from '@tesseract/util/types';
 import { goals } from 'mineflayer-pathfinder';
 
 interface Data {
-    position: Position;
+    position: ParsedPosition;
 }
 
 class MoveToTask implements Task<Data> {
@@ -18,7 +18,7 @@ class MoveToTask implements Task<Data> {
         if (!goal) throw Error('Invalid goal!');
         context.bot.pathfinder.setGoal(goal);
 
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             context.bot.once('path_reset', () => reject('Path reset'));
             context.bot.once('goal_reached', () => resolve());
         });

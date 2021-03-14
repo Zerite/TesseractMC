@@ -9,24 +9,21 @@ export const request = async (prompt: string): Promise<string | null> => {
         },
         data: {
             prompt:
-                'IN: Walk over to me\n' +
-                'OUT: move to me\n' +
+                'IN: Walk over to me and then say hello\n' +
+                'OUT: do move to me and say "Hello!" finish\n' +
                 '\n' +
-                'IN: Say Hello world!\n' +
-                'OUT: say "Hello world!"\n' +
+                'IN: Get to 0 20 10 then let me know when you arrive\n' +
+                'OUT: do move to 0 20 10 and say "I\'m here!"\n' +
                 '\n' +
-                'IN: Get to 0 20 10\n' +
-                'OUT: move to 0 20 10\n' +
+                'IN: Walk 5 blocks in the x axis and say Hello! then say Woo!\n' +
+                'OUT: do move to relative 5 0 and say "Hello!" and say "Woo!" finish\n' +
                 '\n' +
-                'IN: Walk over to Chungus and say Hello! and say Woo!\n' +
-                'OUT: do move to player Chungus then say "Hello!" then say "Woo!" finish\n' +
-                '\n' +
-                'IN: say awesome sauce and then walk to 0 0\n' +
-                'OUT: do say "awesome sauce" then move to 0 0 finish\n' +
+                'IN: Go to a spider and attack it then come back\n' +
+                'OUT: do move to mob "spider" and attack mob "spider" and move to me finish\n' +
                 '\n' +
                 `IN: ${prompt}\n` +
                 'OUT:',
-            temperature: 0,
+            temperature: 0.1,
             stop: ['\nIN:', 'IN:', '\nOUT:', 'OUT:'],
             max_tokens: 100,
             top_p: 1,

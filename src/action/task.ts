@@ -1,27 +1,34 @@
 import { Bot, Player } from 'mineflayer';
 
+export type TaskType = 'attack' | 'moveTo' | 'say' | 'stop' | 'runScript' | string;
+
 export interface ExecutionContext {
     bot: Bot;
     executor?: Player;
+    stopping: boolean;
 }
 
 export interface ParsedTask<T extends TaskData> {
-    task: string;
+    task: TaskType;
     data: T;
 }
 
-export interface Position {
+export interface ParsedEntity {
+    special?: 'me';
+    player?: string;
+    mob?: string;
+}
+
+export interface ParsedPosition {
     basic?: {
-        entity?: {
-            special?: 'me';
-            player?: string;
-        };
+        entity?: ParsedEntity;
         coordinates?: {
             x: number;
             y?: number;
             z: number;
         };
     };
+    relative?: ParsedPosition;
 }
 
 export type TaskData = Record<string, unknown> | unknown;

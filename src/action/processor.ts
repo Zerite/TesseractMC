@@ -1,6 +1,6 @@
 import { ExecutionContext, TaskData } from '@tesseract/action/task';
 
-export type ProcessorType = 'execute' | 'executeAll';
+export type ProcessorType = 'execute' | 'executeAll' | 'repeat';
 
 export interface ParsedProcessor<T extends TaskData> {
     type: ProcessorType;
