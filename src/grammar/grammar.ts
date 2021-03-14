@@ -183,8 +183,22 @@ const grammar: Grammar = {
         },
         { name: 'wschar', symbols: [/[ \t\n\v\f]/], postprocess: id },
         {
+            name: 'Expression$ebnf$1$string$1',
+            symbols: [
+                { literal: 'f' },
+                { literal: 'i' },
+                { literal: 'n' },
+                { literal: 'i' },
+                { literal: 's' },
+                { literal: 'h' },
+            ],
+            postprocess: (d) => d.join(''),
+        },
+        { name: 'Expression$ebnf$1', symbols: ['Expression$ebnf$1$string$1'], postprocess: id },
+        { name: 'Expression$ebnf$1', symbols: [], postprocess: () => null },
+        {
             name: 'Expression',
-            symbols: ['Task'],
+            symbols: ['Task', '_', 'Expression$ebnf$1'],
             postprocess: (input) => ({ type: 'execute', data: { task: input[0] } }),
         },
         { name: 'Expression$string$1', symbols: [{ literal: 'd' }, { literal: 'o' }], postprocess: (d) => d.join('') },
@@ -195,7 +209,7 @@ const grammar: Grammar = {
         },
         {
             name: 'ExpressionList$string$1',
-            symbols: [{ literal: 'a' }, { literal: 'n' }, { literal: 'd' }],
+            symbols: [{ literal: 't' }, { literal: 'h' }, { literal: 'e' }, { literal: 'n' }],
             postprocess: (d) => d.join(''),
         },
         {
@@ -245,13 +259,11 @@ const grammar: Grammar = {
             postprocess: (input) => ({ task: 'moveTo', data: { position: input[2] } }),
         },
         {
-            name: 'Task$subexpression$3',
-            symbols: [/[nN]/, /[oO]/, /[tT]/, /[hH]/, /[iI]/, /[nN]/, /[gG]/],
-            postprocess: function (d) {
-                return d.join('');
-            },
+            name: 'Task$string$1',
+            symbols: [{ literal: 's' }, { literal: 't' }, { literal: 'o' }, { literal: 'p' }],
+            postprocess: (d) => d.join(''),
         },
-        { name: 'Task', symbols: ['Task$subexpression$3'], postprocess: (input) => ({ task: 'nothing' }) },
+        { name: 'Task', symbols: ['Task$string$1'], postprocess: (input) => ({ task: 'stop' }) },
         { name: 'String$ebnf$1', symbols: [] },
         { name: 'String$ebnf$1', symbols: ['String$ebnf$1', /[^\\"]/], postprocess: (d) => d[0].concat([d[1]]) },
         {

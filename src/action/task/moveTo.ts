@@ -7,7 +7,7 @@ interface Data {
 }
 
 class MoveToTask implements Task<Data> {
-    execute(context: ExecutionContext, parsed: ParsedTask<Data>): void {
+    async execute(context: ExecutionContext, parsed: ParsedTask<Data>): Promise<void> {
         const position = getPosition(context, parsed.data.position);
         if (!position) throw Error('Invalid position!');
 
@@ -17,6 +17,11 @@ class MoveToTask implements Task<Data> {
 
         if (!goal) throw Error('Invalid goal!');
         context.bot.pathfinder.setGoal(goal);
+
+        return new Promise((resolve, reject) => {
+            context.bot.once('path_reset', () => reject('Path reset'));
+            context.bot.once('goal_reached', () => resolve());
+        });
     }
 }
 

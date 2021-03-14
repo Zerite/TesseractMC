@@ -5,7 +5,7 @@ interface Data {
 }
 
 class SayTask implements Task<Data> {
-    execute(context: ExecutionContext, parsed: ParsedTask<Data>): void {
+    async execute(context: ExecutionContext, parsed: ParsedTask<Data>): Promise<void> {
         context.bot.chat(parsed.data.text);
     }
 }

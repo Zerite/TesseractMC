@@ -7,8 +7,8 @@ interface Data {
 }
 
 class ExecuteAllProcessor implements Processor<Data> {
-    execute(context: ExecutionContext, data: Data): void {
-        data.tasks.forEach((value) => process(context, value));
+    async execute(context: ExecutionContext, data: Data): Promise<void> {
+        for (const task of data.tasks) await process(context, task);
     }
 }
 

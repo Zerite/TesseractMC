@@ -27,5 +27,5 @@ export interface Position {
 export type TaskData = Record<string, unknown> | unknown;
 
 export interface Task<T extends TaskData> {
-    execute(context: ExecutionContext, parsed: ParsedTask<T>): void;
+    execute(context: ExecutionContext, parsed: ParsedTask<T>): Promise<void>;
 }

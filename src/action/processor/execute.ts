@@ -7,8 +7,8 @@ interface Data {
 }
 
 class ExecuteProcessor implements Processor<Data> {
-    execute(context: ExecutionContext, data: Data): void {
-        tasks[data.task.task]?.execute(context, data.task);
+    async execute(context: ExecutionContext, data: Data): Promise<void> {
+        await tasks[data.task.task]?.execute(context, data.task);
     }
 }
 

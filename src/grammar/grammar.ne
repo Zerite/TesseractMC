@@ -4,18 +4,18 @@
 @builtin "whitespace.ne"
 
 Expression -> 
-    Task {% input => ({ type: 'execute', data: { task: input[0] } }) %} |
+    Task _ "finish":? {% input => ({ type: 'execute', data: { task: input[0] } }) %} |
     "do" __ ExpressionList {% input => ({ type: 'executeAll', data: { tasks: input[2] }}) %}
 
 ExpressionList ->
-    Expression __ "and" __ ExpressionList {% input => [input[0], ...input[4]] %} |
+    Expression __ "then" __ ExpressionList {% input => [input[0], ...input[4]] %} |
     Expression __ "finish" {% input => [input[0]] %}
 
 Task ->
     # EX: say "Hello, world!"
     "say"i __ String {% input => ({ task: "say", data: { text: input[2] } }) %} |
     "move to"i __ Position {% input => ({ task: "moveTo", data: { position: input[2] } }) %} |
-    "nothing"i {% input => ({ task: "nothing" }) %}
+    "stop" {% input => ({ task: "stop" }) %}
 
 String -> "\"" [^\\"]:* "\"" {% d => d[1].join("") %}
 Word -> [^ ]:* {% d => d[0].join("") %}

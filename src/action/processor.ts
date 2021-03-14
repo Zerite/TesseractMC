@@ -8,5 +8,5 @@ export interface ParsedProcessor<T extends TaskData> {
 }
 
 export interface Processor<T extends TaskData> {
-    execute(context: ExecutionContext, data: T): void;
+    execute(context: ExecutionContext, data: T): Promise<void>;
 }

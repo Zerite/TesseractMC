@@ -6,7 +6,11 @@ export const getPosition = (context: ExecutionContext, position: Position): Vec3
         if (position.basic.entity) {
             if (position.basic.entity?.special === 'me') return context.executor?.entity?.position;
             if (position.basic.entity?.player)
-                return context.bot.players[position.basic.entity.player]?.entity?.position;
+                return context.bot.players[
+                    Object.keys(context.bot.players).find(
+                        (key) => key.toLowerCase() === position.basic.entity.player.toLowerCase(),
+                    )
+                ]?.entity?.position;
         } else if (position.basic.coordinates) {
             return new Vec3(
                 position.basic.coordinates.x,

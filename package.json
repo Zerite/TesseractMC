@@ -13,8 +13,10 @@
   },
   "dependencies": {
     "@skyra/timestamp": "^1.0.0",
+    "axios": "^0.21.1",
     "chalk": "^4.1.0",
     "cross-env": "^7.0.3",
+    "dotenv-extended": "^2.9.0",
     "json-colorizer": "^2.2.2",
     "mineflayer": "^3.3.0",
     "mineflayer-pathfinder": "^1.6.1",
