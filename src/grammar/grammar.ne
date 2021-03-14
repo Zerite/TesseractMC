@@ -3,14 +3,18 @@
 @builtin "number.ne"
 @builtin "whitespace.ne"
 
+Main -> Expression _ ("end" | "end "):? {% input => input[0] %}
+
 Expression -> 
-    Task _ "finish":? {% input => ({ type: 'execute', data: { task: input[0] } }) %} |
-    "do" __ ExpressionList {% input => ({ type: 'executeAll', data: { tasks: input[2] }}) %} |
-    "repeat" __ Expression __ "done" {% input => ({ type: 'repeat', data: { task: input[2] }}) %}
+    Task {% input => ({ type: 'execute', data: { task: input[0] } }) %} |
+    "run" _ "{" _ ExpressionList {% input => ({ type: 'executeAll', data: { tasks: input[4] }}) %} |
+    "repeat" _ "{" _ Expression (__ "end" | _ "}") {% input => ({ type: 'repeat', data: { task: input[4] }}) %} |
+    "repeat" __ "until" __ Condition (__ | _ "{" _) Expression (__ "end" | _ "}") {% input => ({ type: 'repeat', data: { task: input[6], condition: input[4] }}) %} |
+    "repeat" __ unsigned_int __ "times" (__ | _ "{" _) Expression (__ "end" | _ "}") {% input => ({ type: 'repeat', data: { task: input[6], count: input[2] }}) %}
 
 ExpressionList ->
     Expression __ ("and" | "then") __ ExpressionList {% input => [input[0], ...input[4]] %} |
-    Expression __ "finish" {% input => [input[0]] %}
+    Expression (__ "end" | _ "}") {% input => [input[0]] %}
 
 Task ->
     # EX: say "Hello, world!"
@@ -37,5 +41,8 @@ Coordinates ->
 
 Entity ->
     "me" {% input => ({ special: "me" }) %} |
-    "player" __ Word {% input => ({ player: input[2] }) %} |
+    "player" _ Word:? {% input => ({ player: input[2] || "%ME%" }) %} |
     "mob" __ String {% input => ({ mob: input[2] }) %}
+
+Condition ->
+    "at" __ Position {% input => ({ type: "at", data: { position: input[2] }}) %}

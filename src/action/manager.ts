@@ -31,6 +31,7 @@ const processors: Record<ProcessorType, Processor<unknown>> = {
 
 const contexts: ExecutionContext[] = [];
 
+export const cancel = (): void => contexts.forEach((value) => (value.stopping = true));
 export const executeScript = async (context: ExecutionContext, name: string): Promise<void> =>
     await execute(context, (await readFilePromise(name)).toString().replace(/\n|\r|\n\r/g, ' '));
 
@@ -48,8 +49,6 @@ export const execute = async (context: ExecutionContext, text: string): Promise<
         context.bot.chat(e.toString().split('\n').shift());
     }
 };
-
-export const cancel = (): void => contexts.forEach((value) => (value.stopping = true));
 
 export const process = async (context: ExecutionContext, processor: ParsedProcessor<unknown>): Promise<void> => {
     if (context.stopping) return Logger.debug('Stopping execution.');

@@ -1,5 +1,5 @@
 import { createBot } from 'mineflayer';
-import { execute } from '@tesseract/action/manager';
+import { cancel, execute } from '@tesseract/action/manager';
 import { Movements, pathfinder } from 'mineflayer-pathfinder';
 import minecraftData from 'minecraft-data';
 import Logger from '@tesseract/util/logger';
@@ -37,9 +37,12 @@ bot.on('chat', async (username, message) => {
     if (username === bot.username) return;
 
     if (process.env.OPENAI_ENABLED?.toLowerCase() === 'true') {
-        const response = await request(message);
+        const context = { bot, executor: bot.players[username], stopping: false };
+        const response = await request(context, message);
+
         Logger.info(`${chalk.red('[OPENAI]')} ${response}`);
-        if (response) await execute({ bot, executor: bot.players[username], stopping: false }, response);
+        cancel();
+        if (response) await execute(context, response);
     } else {
         await execute({ bot, executor: bot.players[username], stopping: false }, message);
     }

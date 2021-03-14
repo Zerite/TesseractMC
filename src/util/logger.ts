@@ -21,7 +21,7 @@ class TesseractLogger {
             .joint()
             .log(' ')
             .joint()
-            .info(...args);
+            .log(...args);
     }
 
     debug(...args: unknown[]) {
@@ -32,7 +32,7 @@ class TesseractLogger {
             .joint()
             .log(' ')
             .joint()
-            .debug(...args);
+            .log(...args);
     }
 
     error(...args: unknown[]) {
@@ -43,7 +43,7 @@ class TesseractLogger {
             .joint()
             .log(' ')
             .joint()
-            .error(...args);
+            .log(...args);
     }
 }
 
